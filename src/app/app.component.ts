@@ -2,7 +2,7 @@ import {
   Component,
   OnInit
 } from '@angular/core';
-
+import {FormGroup, FormArray, FormBuilder} from '@angular/forms';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -11,9 +11,20 @@ import {
 export class AppComponent implements OnInit {
   highchartsSettings;
   title = 'timeline';
+  form: FormGroup;
 
+  constructor(
+    private formBuilder: FormBuilder
+  ) {}
   ngOnInit() {
     this.initHighcharts();
+    this.initForm();
+  }
+
+  initForm() {
+    this.form = this.formBuilder.group({
+      animations: this.formBuilder.array([this.createAnimation()])
+    });
   }
 
   initHighcharts() {
@@ -62,5 +73,29 @@ export class AppComponent implements OnInit {
         showInLegend: false,
       }]
     };
+  }
+
+  public addAnimation(): void {
+    const animations = this.form.get('animations') as FormArray;
+    animations.push(this.createAnimation());
+  }
+
+  public removeAnimation(index: number): void {
+    const animations = this.form.get('animations') as FormArray;
+    animations.removeAt(index);
+  }
+
+  private createAnimation(): FormGroup {
+    return this.formBuilder.group({
+      name: [''],
+      delay: [''],
+      duration: [''],
+      color: [],
+      thumbnail: [''],
+    });
+  }
+
+  public submit() {
+    console.log(this.form);
   }
 }

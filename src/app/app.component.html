@@ -1,3 +1,45 @@
 <h1>Timeline</h1>
 <app-highchart [highchartsSettings]="highchartsSettings" class="highcharts">
 </app-highchart>
+
+<div>
+  <table [formGroup]="form">
+    <tr>
+      <thead>
+        <th>Name</th>
+        <th>Delay</th>
+        <th>Duration</th>
+        <th>Color</th>
+        <th>Thumbnail</th>
+        <th></th>
+      </thead>
+    </tr>
+    <tr formArrayName="animations" *ngFor="let item of form.get('animations').controls; let i = index; let last = last">
+      <tbody [formGroupName]="i">
+        <td>
+          <input type="text" formControlName="name" placeholder="Animation Name">
+        </td>
+        <td>
+          <input type="text" formControlName="delay" placeholder="Delay">
+        </td>
+        <td>
+          <input type="text" formControlName="duration" placeholder="Duration">
+        </td>
+        <td>
+          <input
+            [colorPicker]="form.controls.animations.controls[i].controls.color.value"
+            [value]="form.controls.animations.controls[i].controls.color.value"
+            (colorPickerChange)="form.controls.animations.controls[i].controls.color.setValue($event)"
+            [style.background]="form.controls.animations.controls[i].controls.color.value"
+            formControlName="color">
+        </td>
+        <td>
+          <input type="file" formControlName="thumbnail">
+        </td>
+        <td (click)="addAnimation()" *ngIf="last">+</td>
+        <td (click)="removeAnimation()" *ngIf="!last">x</td>
+      </tbody>
+    </tr>
+  </table>
+  <button (click)="submit()">Submit</button>
+</div>
